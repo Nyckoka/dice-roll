@@ -1,0 +1,21 @@
+openapi: 3.0.1
+info:
+  title: "Dice Roll"
+  description: "Roll a dice. What number will you get?"
+  version: "0.1"
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/roll:
+    get:
+      description: "Rolls dices."
+      parameters:
+        - in: query
+          name: numberOfDices
+          schema:
+            type: integer
+          description: "Number of dices to roll."
+
+      responses:
+        "200":
+          description: "Success"
