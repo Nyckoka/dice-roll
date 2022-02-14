@@ -1,2 +1,2 @@
 # dice-roll
-Roll a dice. What number will you get?
+Roll dice. What numbers will you get?

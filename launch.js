@@ -1,15 +1,11 @@
-
-
-const express = require("express");
-const app = express();
-
-const PORT = 8080;
-
-const database = require("./database-mem");
-const data_ext = require("./data-ext");
-const services = require("./services")(database, data_ext);
-const api = require("./api")(services);
-
+"use strict";
+exports.__esModule = true;
+var express_1 = require("express");
+var app = (0, express_1["default"])();
+var PORT = 8080;
+var database_mem_1 = require("./database-mem");
+var data_ext_1 = require("./data-ext");
+var services = require("./services")(database_mem_1["default"], data_ext_1["default"]);
+var api = require("./api")(services);
 app.use("/api", api);
-
 app.listen(PORT);
