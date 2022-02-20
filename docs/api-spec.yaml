@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: "Dice Roll"
-  description: "Roll a dice. What number will you get?"
+  description: "Roll dice. What numbers will you get?"
   version: "0.1"
 servers:
   - url: http://localhost:8080
@@ -11,10 +11,38 @@ paths:
       description: "Rolls dices."
       parameters:
         - in: query
-          name: numberOfDices
+          name: numberOfDice
           schema:
             type: integer
-          description: "Number of dices to roll."
+          description: "Number of dice to roll."
+        - in: query
+          name: diceSideCount
+          schema:
+            type: integer
+          description: "Number of sides of the dice."
+
+      responses:
+        "200":
+          description: "Success"
+  /api/sumDistribution:
+    get:
+      description: "Get the distribution of the sum of dice rolls."
+      parameters:
+        - in: query
+          name: numberOfDice
+          schema:
+            type: integer
+          description: "Number of dice to roll."
+        - in: query
+          name: diceSideCount
+          schema:
+            type: integer
+          description: "Number of sides of the dice."
+        - in: query
+          name: numberOfRolls
+          schema:
+            type: integer
+          description: "Number of rolls."
 
       responses:
         "200":

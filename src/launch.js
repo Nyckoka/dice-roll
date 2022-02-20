@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+exports.__esModule = true;
+var express_1 = __importDefault(require("express"));
+var database_mem_1 = __importDefault(require("./database-mem"));
+var data_ext_1 = __importDefault(require("./data-ext"));
+var services_1 = __importDefault(require("./services"));
+var api_1 = __importDefault(require("./api"));
+var site_1 = __importDefault(require("./site"));
+var app = (0, express_1["default"])();
+var PORT = 8080;
+var services = (0, services_1["default"])(database_mem_1["default"], data_ext_1["default"]);
+var api = (0, api_1["default"])(services);
+var site = (0, site_1["default"])(services);
+app.set('view engine', 'hbs');
+app.use("/api", api);
+app.use("/", site);
+app.listen(PORT);

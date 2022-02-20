@@ -1,0 +1,60 @@
+<h1>Sum Distribution</h1>
+
+
+{{#if distribution}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div style="float:right">
+    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+</div>
+
+<script>
+    var xValues = [];
+    var yValues = [];
+</script>
+
+{{#each distribution}}
+<script>
+    xValues.push({{ @key }})
+    yValues.push({{ this }})
+</script>
+{{/each}}
+
+<script>
+    new Chart("myChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: "black",
+                data: yValues
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: "Sum Distribution"
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{{/if}}
+
+<div style="float:left">
+    <form action="/sumDistribution" method="get">
+        <label for="numberOfDice">Number of dice:</label>
+        <input type="text" id="numberOfDice" name="numberOfDice" value="{{numberOfDice}}"><br><br>
+        <label for="diceSideCount">Number of sides of the dice:</label>
+        <input type="text" id="diceSideCount" name="diceSideCount" value="{{diceSideCount}}"><br><br>
+        <label for="numberOfRolls">Number of rolls:</label>
+        <input type="text" id="numberOfRolls" name="numberOfRolls" value="{{numberOfRolls}}"><br><br>
+
+        <button type="submit">Roll</button>
+    </form>
+</div>
