@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Dice Roll Statistics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</head>
+
+<body>
+  <button id="rollButton">Roll Dice</button>
+  <button id="clearButton">Clear Rolls</button>
+  <input type="text" id="numRolls" placeholder="Enter number of rolls">
+
+  <div style="width: 50%; height: 50%;">
+    <canvas id="myChart" width="100%" height="50%"></canvas>
+  </div>
+
+  <script>
+    // Create the chart
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+        datasets: [{
+          label: 'Number of Hits',
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+
+    document.getElementById('rollButton').addEventListener('click', function () {
+      var numRolls = document.getElementById('numRolls').value;
+      var rollsDone = 0;
+
+      console.log(numRolls);
+
+      function rollDice() {
+        for (var i = 0; i < 1000; i++) {
+          if (rollsDone >= numRolls) {
+            break;
+          }
+          var roll = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
+          chart.data.datasets[0].data[roll - 2]++;
+          rollsDone++;
+        }
+        chart.update();
+        setTimeout(rollDice, 0);
+      }
+
+      rollDice();
+    });
+
+    document.getElementById('clearButton').addEventListener('click', function () {
+      chart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      chart.update();
+    });
+  </script>
+</body>
+
+</html>
