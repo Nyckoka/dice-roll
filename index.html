@@ -8,106 +8,37 @@
 </head>
 
 <body>
+  <h1>Dice Roll</h1>
+  <p>Rolls dice and records the sum of their values, plotting a chart. You can also see the expected probability distribution.</p>
+
+  <label for="numDice">Number of dice to roll:</label>
+  <input type="number" id="numDice" min="1" max="10" value="2">
+  <label for="numSides">Number of sides of the dice:</label>
+  <input type="number" id="numSides" min="1" max="10" value="6">
+  <br>
+
   <button id="rollButton">Roll Dice</button>
   <button id="clearButton">Clear Rolls</button>
-  <input type="text" id="numRolls" placeholder="Enter number of rolls">
-  <button id="toggleNormalDistributionButton">Toggle Normal Distribution Line</button>
+  <input type="text" id="numRolls" placeholder="Enter number of rolls" value="1">
+  <button id="toggleDistributionLineButton">Toggle Distribution Line</button>
   <br>
-  <div style="display: flex;">
-    Total rolls:
-    <div id="totalRolls">0</div>
-  </div>
+
+  <label for="totalRolls">Total rolls:</label>
+  <div id="totalRolls">0</div>
 
   <div style="width: 50%; height: 50%;">
     <canvas id="myChart" width="100%" height="50%"></canvas>
   </div>
 
-  <script>
-    // Create the chart
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-        datasets: [{
-          label: 'Number of Hits',
-          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          borderWidth: 1
-        },
-        {
-          label: 'Normal Distribution',
-          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          type: 'line',
-          yAxisID: 'normal-distribution-y-axis'
-        }]
-      },
-      options: {
-        tooltips: {
-          callbacks: {
-            label: function (tooltipItem, data) {
-              var label = data.labels[tooltipItem.index];
-              var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-              // Calculate the total number of rolls
-              var totalRolls = data.datasets[tooltipItem.datasetIndex].data.reduce((acc, cur) => acc + cur, 0);
-              // Calculate the probability of each hit possibility
-              var probability = (value / totalRolls).toFixed(4);
-              // Display both values in the tooltip
-              return label + ': ' + value + ' (' + probability + '%)';
-            }
-          }
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
-          },
-          {
-            id: 'normal-distribution-y-axis',
-            position: 'right',
-            ticks: {
-              beginAtZero: true
-            }
-          }]
-        }
-      }
-    });
+  <button id="toggleExpectedProbabilitiesTable">Show expected probabilities</button>
+  <table id="expectedProbabilitiesTable" style="display: none;">
+    <tr>
+      <th>Sum</th>
+      <th>Probability</th>
+    </tr>
+  </table>
 
-    document.getElementById('rollButton').addEventListener('click', async function () {
-      var numRolls = document.getElementById('numRolls').value;
-      var rollsDone = 0;
-
-      while (rollsDone < numRolls) {
-        for (var i = 0; i < 1000 && rollsDone < numRolls; i++) {
-          var roll = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
-          chart.data.datasets[0].data[roll - 2]++;
-          chart.data.datasets[1].data[roll - 2]++;
-          rollsDone++;
-        }
-
-        var totalRolls = chart.data.datasets[0].data.reduce((acc, cur) => acc + cur, 0);
-        document.getElementById('totalRolls').innerHTML = totalRolls;
-        chart.update();
-        await new Promise(resolve => requestAnimationFrame(resolve));
-      }
-    })
-
-    document.getElementById('clearButton').addEventListener('click', function () {
-      chart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      chart.data.datasets[1].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      chart.update();
-      document.getElementById('totalRolls').innerHTML = 0;
-    });
-
-    document.getElementById('toggleNormalDistributionButton').addEventListener('click', function () {
-      var normalDistributionDataset = chart.data.datasets.find(dataset => dataset.label === 'Normal Distribution');
-      normalDistributionDataset.hidden = !normalDistributionDataset.hidden;
-
-      chart.update();
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 
 </html>
