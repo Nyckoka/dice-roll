@@ -10,6 +10,11 @@
   <button id="rollButton">Roll Dice</button>
   <button id="clearButton">Clear Rolls</button>
   <input type="text" id="numRolls" placeholder="Enter number of rolls">
+  <br>
+  <div style="display: flex;">
+    Total rolls:
+    <div id="totalRolls">0</div>
+  </div>
 
   <div style="width: 50%; height: 50%;">
     <canvas id="myChart" width="100%" height="50%"></canvas>
@@ -41,31 +46,26 @@
       }
     });
 
-    document.getElementById('rollButton').addEventListener('click', function () {
+    document.getElementById('rollButton').addEventListener('click', async function () {
       var numRolls = document.getElementById('numRolls').value;
       var rollsDone = 0;
 
-      console.log(numRolls);
-
-      function rollDice() {
-        for (var i = 0; i < 1000; i++) {
-          if (rollsDone >= numRolls) {
-            break;
-          }
+      while (rollsDone < numRolls) {
+        for (var i = 0; i < 1000 && rollsDone < numRolls; i++) {
           var roll = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
           chart.data.datasets[0].data[roll - 2]++;
           rollsDone++;
         }
+        document.getElementById('totalRolls').innerHTML = chart.data.datasets[0].data.reduce((acc, cur) => acc + cur, 0);
         chart.update();
-        setTimeout(rollDice, 0);
+        await new Promise(resolve => requestAnimationFrame(resolve));
       }
-
-      rollDice();
-    });
+    })
 
     document.getElementById('clearButton').addEventListener('click', function () {
       chart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       chart.update();
+      document.getElementById('totalRolls').innerHTML = 0;
     });
   </script>
 </body>
