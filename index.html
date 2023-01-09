@@ -9,7 +9,8 @@
 
 <body>
   <h1>Dice Roll</h1>
-  <p>Rolls dice and records the sum of their values, plotting a chart. You can also see the expected probability distribution.</p>
+  <p>Rolls dice and records the sum of their values, plotting a chart. You can also see the expected probability
+    distribution.</p>
 
   <label for="numDice">Number of dice to roll:</label>
   <input type="number" id="numDice" min="1" max="10" value="2">
@@ -31,12 +32,37 @@
   </div>
 
   <button id="toggleExpectedProbabilitiesTable">Show expected probabilities</button>
-  <table id="expectedProbabilitiesTable" style="display: none;">
-    <tr>
-      <th>Sum</th>
-      <th>Probability</th>
-    </tr>
-  </table>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+
+    tr {
+      border-top: 1px solid black;
+      border-bottom: 1px solid black;
+    }
+
+    td,
+    th {
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+      padding: 7px;
+      text-align: center;
+    }
+  </style>
+
+  <div id="expectedProbabilitiesTableDiv"
+    style="overflow:scroll; height:100px; width:50%; border: 1px solid black; display: block;">
+    <table id="expectedProbabilitiesTable" style="display: block;">
+      <tr>
+        <th>Sum</th>
+      </tr>
+      <tr>
+        <th>Probability</th>
+      </tr>
+    </table>
+  </div>
+
 
   <script src="script.js"></script>
 </body>

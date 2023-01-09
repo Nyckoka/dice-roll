@@ -47,7 +47,8 @@ var chart = new Chart(ctx, {
                 id: 'distribution-line-y-axis',
                 position: 'right',
                 ticks: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    display: false
                 }
             }]
         }
@@ -86,8 +87,6 @@ let rollFunctionsAbortControllers = [];
 document.getElementById('rollButton').addEventListener('click', () => {
     let abortController = new AbortController();
     rollFunctionsAbortControllers.push(abortController);
-
-    console.log('Rolling...');
 
     async function roll() {
         const numDice = document.getElementById('numDice').value;
@@ -130,7 +129,10 @@ document.getElementById('toggleDistributionLineButton').addEventListener('click'
 
 document.getElementById('toggleExpectedProbabilitiesTable').addEventListener('click', function () {
     var table = document.getElementById('expectedProbabilitiesTable');
+    var tableDiv = document.getElementById('expectedProbabilitiesTableDiv');
+
     table.style.display = table.style.display === 'none' ? 'block' : 'none';
+    tableDiv.style.display = tableDiv.style.display === 'none' ? 'block' : 'none';
 });
 
 // Update the chart when the number of dice to roll changes
@@ -149,8 +151,15 @@ document.getElementById('numSides').addEventListener('change', function () {
 function resetExpectedProbabilitiesTable(numDice, numSides) {
     // Clear the table
     var table = document.getElementById('expectedProbabilitiesTable');
-    while (table.rows.length > 1) {
-        table.deleteRow(-1);
+
+    // Delete all the cells in the first row except the first cell
+    while (table.rows[0].cells.length > 1) {
+        table.rows[0].deleteCell(-1);
+    }
+
+    // Delete all the cells in the second row except the first cell
+    while (table.rows[1].cells.length > 1) {
+        table.rows[1].deleteCell(-1);
     }
 
     // Calculate the probability of each possible sum
@@ -166,9 +175,8 @@ function resetExpectedProbabilitiesTable(numDice, numSides) {
         }
 
         var probability = favorableOutcomes / possibleOutcomes * 100;
-        var row = table.insertRow(-1);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
+        var cell1 = table.rows[0].insertCell(-1);
+        var cell2 = table.rows[1].insertCell(-1);
         cell1.innerHTML = i;
         cell2.innerHTML = probability.toFixed(4) + '%';
     }
