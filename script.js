@@ -1,5 +1,4 @@
 
-
 // Create the chart
 var ctx = document.getElementById('myChart').getContext('2d');
 var chart = new Chart(ctx, {
@@ -17,7 +16,10 @@ var chart = new Chart(ctx, {
             label: 'Distribution Line',
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             type: 'line',
-            yAxisID: 'distribution-line-y-axis'
+            yAxisID: 'distribution-line-y-axis',
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            pointHitRadius: 0
         }]
     },
     options: {
@@ -59,6 +61,9 @@ function reset() {
     var numDice = document.getElementById('numDice').value;
     var numSides = document.getElementById('numSides').value;
 
+    rollFunctionsAbortControllers.forEach(abortController => abortController.abort());
+    rollFunctionsAbortControllers = [];
+
     // Calculate the possible sums that can be obtained by rolling `numDice` dice with `numSides` sides
     var labels = [];
     for (var i = numDice; i <= numDice * numSides; i++) {
@@ -76,31 +81,41 @@ function reset() {
 }
 
 
+let rollFunctionsAbortControllers = [];
 
-document.getElementById('rollButton').addEventListener('click', async function () {
-    var numDice = document.getElementById('numDice').value;
-    var numSides = document.getElementById('numSides').value;
-    var numRolls = document.getElementById('numRolls').value;
-    var rollsDone = 0;
+document.getElementById('rollButton').addEventListener('click', () => {
+    let abortController = new AbortController();
+    rollFunctionsAbortControllers.push(abortController);
 
-    while (rollsDone < numRolls) {
-        for (var i = 0; i < 1000 && rollsDone < numRolls; i++) {
-            var roll = 0;
-            for (var j = 0; j < numDice; j++) {
-                roll += Math.floor(Math.random() * numSides) + 1;
+    console.log('Rolling...');
+
+    async function roll() {
+        const numDice = document.getElementById('numDice').value;
+        const numSides = document.getElementById('numSides').value;
+        const numRolls = document.getElementById('numRolls').value;
+        let rollsDone = 0;
+
+        while (rollsDone < numRolls) {
+            if (abortController.signal.aborted) return;
+            for (let i = 0; i < 1000 && rollsDone < numRolls; i++) {
+                let roll = 0;
+                for (let j = 0; j < numDice; j++) {
+                    roll += Math.floor(Math.random() * numSides) + 1;
+                }
+                chart.data.datasets[0].data[roll - numDice]++;
+                chart.data.datasets[1].data[roll - numDice]++;
+                rollsDone++;
             }
-            chart.data.datasets[0].data[roll - numDice]++;
-            chart.data.datasets[1].data[roll - numDice]++;
-            rollsDone++;
-        }
 
-        var totalRolls = chart.data.datasets[0].data.reduce((acc, cur) => acc + cur, 0);
-        console.log(totalRolls)
-        document.getElementById('totalRolls').innerHTML = totalRolls;
-        chart.update();
-        await new Promise(resolve => requestAnimationFrame(resolve));
+            const totalRolls = chart.data.datasets[0].data.reduce((acc, cur) => acc + cur, 0);
+            document.getElementById('totalRolls').innerHTML = totalRolls;
+            chart.update();
+            await new Promise(resolve => requestAnimationFrame(resolve));
+        }
     }
-})
+
+    roll();
+});
 
 document.getElementById('clearButton').addEventListener('click', function () {
     reset()
